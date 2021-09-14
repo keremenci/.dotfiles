@@ -36,7 +36,7 @@ IP=$(ifconfig eth0 | grep "inet " | cut -d " " -f 10)
 
 # determine git branch name
 function parse_git_branch() {
-    git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
+    git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's✗/* \(.*\)/\1/'
 }
 
 # Determine the branch/state information for this git repository.
@@ -60,7 +60,7 @@ function set_prompt_symbol() {
     if test $1 -eq 0; then
         PROMPT_SYMBOL="\$"
     else
-        PROMPT_SYMBOL="${ORANGE}\$${COLOR_NONE}"
+        PROMPT_SYMBOL="${LIGHT_RED}$? ${ORANGE}\$${COLOR_NONE}"
     fi
 }
 

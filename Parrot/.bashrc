@@ -1,3 +1,4 @@
+#!/bin/bash
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -21,16 +22,27 @@ shopt -s histappend
 HISTSIZE=1000
 HISTFILESIZE=2000
 
+# Don't put duplicate lines in the history and do not add lines that start with a space
+export HISTCONTROL=erasedups:ignoredups:ignorespace
+
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
+
+# Set the default editor
+export EDITOR=nvim
+export VISUAL=nvim
+#alias pico='edit'
+#alias spico='sedit'
+#alias nano='edit'
+#alias snano='sedit'
 
 # If set, the pattern "**" used in a pathname expansion context will
 # match all files and zero or more directories and subdirectories.
 #shopt -s globstar
 
 # make less more friendly for non-text input files, see lesspipe(1)
-#[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # set variable identifying the chroot you work in (used in the prompt below)
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
@@ -94,23 +106,11 @@ esac
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    alias dir='dir --color=auto'
-    alias vdir='vdir --color=auto'
 
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 fi
-
-# some more ls aliases
-alias ll='ls -lh'
-alias la='ls -lha'
-alias l='ls -CF'
-alias em='emacs -nw'
-alias dd='dd status=progress'
-alias _='sudo'
-alias _i='sudo -i'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -131,7 +131,102 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-# new prompt
-# IP=$(ifconfig eth0 | grep "inet " | cut -d " " -f 10)
-# PS1="\[\033[0;31m\]\342\224\214\342\224\200$([[ $? != 0 ]] && echo "[\[\033[0;31m\]\342\234\227\[\033[0;37m\]]\342\224\200")[\[\033[1;97m\]\u\[\033[01;33m\]@\[\033[1;94m\]\h\[\033[01;33m\]\[\033[0;31m\]]\342\224\200\[\033[0;31m\][\[\033[1;97m\]"$IP"\[\033[0;31m\]]\342\224\200[\[\033[1;94m\]\w\[\033[0;31m\]]\n\[\033[0;31m\]\342\224\224\342\224\200\342\224\200\342\225\274 \[\033[0m\]\[\e[01;33m\]\$\[\e[0m\]"
+
+# Extracts any archive(s) (if unp isn't installed)
+extract () {
+	for archive in $*; do
+		if [ -f $archive ] ; then
+			case $archive in
+				*.tar.bz2)   tar xvjf $archive    ;;
+				*.tar.gz)    tar xvzf $archive    ;;
+				*.bz2)       bunzip2 $archive     ;;
+				*.rar)       rar x $archive       ;;
+				*.gz)        gunzip $archive      ;;
+				*.tar)       tar xvf $archive     ;;
+				*.tbz2)      tar xvjf $archive    ;;
+				*.tgz)       tar xvzf $archive    ;;
+				*.zip)       unzip $archive       ;;
+				*.Z)         uncompress $archive  ;;
+				*.7z)        7z x $archive        ;;
+				*)           echo "don't know how to extract '$archive'..." ;;
+			esac
+		else
+			echo "'$archive' is not a valid file!"
+		fi
+	done
+}
+
+# Show the current distribution
+distribution ()
+{
+	local dtype
+	# Assume unknown
+	dtype="unknown"
+	
+	# First test against Fedora / RHEL / CentOS / generic Redhat derivative
+	if [ -r /etc/rc.d/init.d/functions ]; then
+		source /etc/rc.d/init.d/functions
+		[ zz`type -t passed 2>/dev/null` == "zzfunction" ] && dtype="redhat"
+	
+	# Then test against SUSE (must be after Redhat,
+	# I've seen rc.status on Ubuntu I think? TODO: Recheck that)
+	elif [ -r /etc/rc.status ]; then
+		source /etc/rc.status
+		[ zz`type -t rc_reset 2>/dev/null` == "zzfunction" ] && dtype="suse"
+	
+	# Then test against Debian, Ubuntu and friends
+	elif [ -r /lib/lsb/init-functions ]; then
+		source /lib/lsb/init-functions
+		[ zz`type -t log_begin_msg 2>/dev/null` == "zzfunction" ] && dtype="debian"
+	
+	# Then test against Gentoo
+	elif [ -r /etc/init.d/functions.sh ]; then
+		source /etc/init.d/functions.sh
+		[ zz`type -t ebegin 2>/dev/null` == "zzfunction" ] && dtype="gentoo"
+	
+	# For Mandriva we currently just test if /etc/mandriva-release exists
+	# and isn't empty (TODO: Find a better way :)
+	elif [ -s /etc/mandriva-release ]; then
+		dtype="mandriva"
+
+	# For Slackware we currently just test if /etc/slackware-version exists
+	elif [ -s /etc/slackware-version ]; then
+		dtype="slackware"
+
+	fi
+	echo $dtype
+}
+
+# Automatically install the needed support files for this .bashrc file
+install_bashrc_support ()
+{
+	local dtype
+	dtype=$(distribution)
+
+	if [ "$dtype" == "redhat" ]; then
+		sudo yum install multitail tree joe
+	elif [ "$dtype" == "suse" ]; then
+		sudo zypper install multitail
+		sudo zypper install tree
+		sudo zypper install joe
+	elif [ "$dtype" == "debian" ]; then
+		sudo apt-get install multitail tree joe
+	elif [ "$dtype" == "parrot" ]; then
+		sudo apt-get install multitail tree joe
+	elif [ "$dtype" == "gentoo" ]; then
+		sudo emerge multitail
+		sudo emerge tree
+		sudo emerge joe
+	elif [ "$dtype" == "mandriva" ]; then
+		sudo urpmi multitail
+		sudo urpmi tree
+		sudo urpmi joe
+	elif [ "$dtype" == "slackware" ]; then
+		echo "No install support for Slackware"
+	else
+		echo "Unknown distribution"
+	fi
+}
+
+# Set prompt
 . ~/.bash_prompt
