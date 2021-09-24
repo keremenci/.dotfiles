@@ -4,4 +4,4 @@ Regular bash for use in ubuntu etc.
 ## Parrot
 Bash configuration for parrotOS
 ## Neovim
-init.vim file for neovim. installation script on progress
+init.vim file for neovim. installation script in progress.
