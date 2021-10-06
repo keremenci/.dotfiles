@@ -1,4 +1,4 @@
-call plug#begin('~/.local/share/nvim/site/plugged')
+call plug#begin(stdpath('data') . '/plugged')
 
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'cohama/lexima.vim'
