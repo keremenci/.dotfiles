@@ -1,11 +1,8 @@
 call plug#begin(stdpath('data') . '/plugged')
-
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'cohama/lexima.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdcommenter'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'zchee/deoplete-jedi'
 Plug 'pangloss/vim-javascript'
 Plug 'tpope/vim-surround'
 " syntax correction and linting
@@ -94,8 +91,6 @@ autocmd Filetype c setlocal ts=4 sts=4 sw=4
 
 " Plugin settings
 
-"" Deoplete
-let g:deoplete#enable_at_startup = 1
 "" use tab to forward cycle
 inoremap <silent><expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 "" use tab to backward cycle
