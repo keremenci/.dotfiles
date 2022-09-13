@@ -88,7 +88,7 @@ cp extract fzf
 git git-escape-magic
 gitignore jump man
 pip python
-sudo thefuck vscode
+sudo vscode
 zsh-autosuggestions 
 #zsh-autocomplete 
 zsh-syntax-highlighting
@@ -125,5 +125,3 @@ alias ohmyzsh="vim ~/.oh-my-zsh"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-eval $(thefuck --alias)
