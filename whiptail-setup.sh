@@ -1,15 +1,19 @@
-#!/bin/sh
+#!/bin/bash
 
 #### WIP ####
 
 DOTFILES_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-DOTFILES=$HOME/.dotfiles
-
 DIRECTORIES=$(for d in */ ; do
     printf "%s " "$(echo $d | head -c -2)"
-    echo
 done)
+
+
+whiptail --clear --title "Welcome" \
+	--msgbox "This script will now install all the dotfiles I use for my setup." 10 60
+
+
+
 
 #TODO install oh-my-zsh
 
@@ -20,41 +24,60 @@ done)
 
 # TODO handle hidden files
 
+OPTIONS=""
+
 for DIR in $DIRECTORIES; do
+	OPTIONS+="$(printf "%s %s " "$DIR" "OFF")"
+done
+
+OPTIONS=($OPTIONS)
+
+CHOICES=$(whiptail --separate-output --noitem \
+	--title "Config Selection" \
+    --checklist "Select configs to apply \nSelect: <space>\nApply : <enter>" $(expr ${#OPTIONS[@]} + 5 ) 40 $(expr ${#OPTIONS[@]} / 2 ) \
+  ${OPTIONS[@]} 3>&1 1>&2 2>&3)
+
+
+for DIR in $CHOICES; do
+echo $DIR
     case $DIR in
- 
+
         kitty)
- 
+
             echo "Configuring $DIR"
             CONFIG_DIR=$HOME/.config/$DIR
 
             [ -d $CONFIG_DIR ] || mkdir -p $CONFIG_DIR
 
             for FILE in $(ls -A $DIR) ; do
-                if [ -e $CONFIG_DIR/$FILE ] ; then
+                if [ -e $CONFIG_DIR/$FILE ] && [ ! -L $CONFIG_DIR/$FILE ] ; then
                     printf "renaming %s as\n\t %s" "$CONFIG_DIR/$FILE" "$CONFIG_DIR/${FILE}.old"
                     mv -f $CONFIG_DIR/$FILE $(echo "$CONFIG_DIR/${FILE}.old")
                 fi
-                    
+
             done
 
             # Won't work with hidden files,
             # see https://stackoverflow.com/questions/1347105/how-do-i-symlink-all-files-from-one-directory-to-another-in-bash
-            
+
             ln -sfn $DOTFILES_DIR/$DIR/* $CONFIG_DIR
         ;;
- 
-        zsh)
 
- 
+        zsh)
+            #TODO install oh my zsh
+
+            CONFIG_DIR=$HOME
+
+            [ -e ~/.zshrc ] || mv ~/.zshrc ~/.zshrc.old
+            [ -e ~/.p10k.zsh ] || mv ~/.p10k.zsh ~/.p10k.zsh.old
+            ln -sfn $DOTFILES_DIR/zsh/.zshrc $CONFIG_DIR/.zshrc
+            ln -sfn $DOTFILES_DIR/zsh/.p10k.zsh $CONFIG_DIR/.p10k.zsh
+
+
     esac
 done
 
-#[ -e ~/.zshrc ] || mv ~/.zshrc ~/.zshrc.old
-#[ -e ~/.p10k.zsh ] || mv ~/.p10k.zsh ~/.p10k.zsh.old
 
-#ln -s $DOTFILES/zsh/.zshrc ~/.zshrc
-#ln -s $DOTFILES/zsh/.p10k.zsh ~/.p10k.zsh
 
 # vim
 

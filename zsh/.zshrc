@@ -89,10 +89,10 @@ git git-escape-magic
 gitignore jump man
 pip python
 sudo vscode
-zsh-autosuggestions 
+#zsh-autosuggestions 
 #zsh-autocomplete 
-zsh-syntax-highlighting
-zsh-vi-mode
+#zsh-syntax-highlighting
+#zsh-vi-mode
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -125,3 +125,8 @@ alias ohmyzsh="vim ~/.oh-my-zsh"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# To customize prompt, run `p10k configure` or edit ~/p10k.zsh.
+[[ ! -f ~/p10k.zsh ]] || source ~/p10k.zsh
+
+PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
