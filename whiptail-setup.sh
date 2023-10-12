@@ -2,6 +2,8 @@
 
 #### WIP ####
 
+# WTF IS THIS mv ~/.config/nvim{,.bak}
+
 DOTFILES_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 DIRECTORIES=$(for d in */ ; do
@@ -64,7 +66,8 @@ echo $DIR
         ;;
 
         zsh)
-            #TODO install oh my zsh
+            sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+            git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 
             CONFIG_DIR=$HOME
 
@@ -76,6 +79,15 @@ echo $DIR
 
     esac
 done
+
+install_kitty () {
+    if [ -f "/etc/arch-release" ]; then
+      ...
+    else
+      ...
+    fi
+    curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+}
 
 
 

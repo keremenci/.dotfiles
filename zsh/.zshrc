@@ -130,3 +130,14 @@ alias ohmyzsh="vim ~/.oh-my-zsh"
 [[ ! -f ~/p10k.zsh ]] || source ~/p10k.zsh
 
 PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
+
+PATH="/home/keremenci/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="/home/keremenci/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="/home/keremenci/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"/home/keremenci/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/home/keremenci/perl5"; export PERL_MM_OPT;
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /usr/bin/terraform terraform
+
+[ -x "$(command -v kitty)" ] && alias ssh="kitty +kitten ssh"
