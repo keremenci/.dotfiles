@@ -10,3 +10,4 @@ SELECT="if [ \$? = 0 ]; then echo \"${SUCCESS}\"; else echo \"${FAIL}\"; fi"
 
 # Throw it all together
 PS1="${RESET}${YELLOW}\u@\h ${WHITE}$IP${NORMAL}:\w ${YELLOW}\$${NORMAL}\`${SELECT}\` "
+
