@@ -87,7 +87,7 @@ common-aliases
 cp extract fzf
 git git-escape-magic
 gitignore jump man
-pip python
+pip python poetry
 sudo vscode
 #zsh-autosuggestions 
 #zsh-autocomplete 
@@ -109,6 +109,7 @@ source $ZSH/oh-my-zsh.sh
     export EDITOR='vim'
  else
    export EDITOR='nvim'
+   export VISUAL='nvim'
 fi
 
 # Compilation flags
@@ -141,3 +142,9 @@ autoload -U +X bashcompinit && bashcompinit
 complete -o nospace -C /usr/bin/terraform terraform
 
 [ -x "$(command -v kitty)" ] && alias ssh="kitty +kitten ssh"
+
+[ -x "$(command -v nvim)" ] && alias vim="nvim"
+
+[ -x "$(command -v vimpager)" ] && export PAGER=nvimpager
+export PATH=$PATH:/home/keremenci/.spicetify
+

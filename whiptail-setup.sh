@@ -71,8 +71,8 @@ echo $DIR
 
             CONFIG_DIR=$HOME
 
-            [ -e ~/.zshrc ] || mv ~/.zshrc ~/.zshrc.old
-            [ -e ~/.p10k.zsh ] || mv ~/.p10k.zsh ~/.p10k.zsh.old
+            #[ -e ~/.zshrc ] || mv ~/.zshrc ~/.zshrc.old
+            #[ -e ~/.p10k.zsh ] || mv ~/.p10k.zsh ~/.p10k.zsh.old
             ln -sfn $DOTFILES_DIR/zsh/.zshrc $CONFIG_DIR/.zshrc
             ln -sfn $DOTFILES_DIR/zsh/.p10k.zsh $CONFIG_DIR/.p10k.zsh
 
